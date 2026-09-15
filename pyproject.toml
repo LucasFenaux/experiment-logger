@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "experiment-logger"
+version = "0.1.0"
+description = "Lightweight, crash-resilient ML research experiment logging and DataFrame reader"
+readme = { text = "Lightweight, crash-resilient ML research experiment logging and DataFrame reader", content-type = "text/markdown" }
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "ML Research Team" },
+]
+keywords = [
+    "machine-learning",
+    "experiment-tracking",
+    "logging",
+    "metrics",
+    "reproducibility",
+    "jsonl",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --strict-markers"
+markers = [
+    "tier1: Tier 1 feature verification tests in isolation",
+    "tier2: Tier 2 boundary, corner, and error-handling tests",
+    "tier3: Tier 3 pairwise and cross-feature interaction tests",
+    "tier4: Tier 4 real-world ML application scenarios",
+    "e2e: End-to-end integration tests",
+]
+
+[tool.coverage.run]
+source = ["experiment_logger"]
+omit = [
+    "tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.uv.workspace]
+members = [
+    ".",
+]
+
+[tool.uv.sources]
+experiment-logger = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "experiment-logger[dev]",
+]
