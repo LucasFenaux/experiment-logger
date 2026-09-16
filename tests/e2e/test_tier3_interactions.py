@@ -160,8 +160,14 @@ def test_pairwise_07_non_git_and_env_capture(tmp_path: Path):
     """Pairwise: Non-git directory captures Python environment without failing git integration."""
     non_git = tmp_path / "non_git_area"
     non_git.mkdir()
-    with Logger(run_name="non_git_run", log_dir=non_git, capture_env=True) as logger:
-        logger.log({"step": 1, "loss": 0.3})
+    
+    old_cwd = os.getcwd()
+    os.chdir(non_git)
+    try:
+        with Logger(run_name="non_git_run", log_dir=non_git, capture_env=True) as logger:
+            logger.log({"step": 1, "loss": 0.3})
+    finally:
+        os.chdir(old_cwd)
 
     meta = LogReader(logs_dir=non_git).get_metadata(non_git / "non_git_run")
     env_data = meta.get("env") or meta.get("environment")

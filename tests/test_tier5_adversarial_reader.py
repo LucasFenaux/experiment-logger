@@ -116,7 +116,7 @@ class TestChainedCorruptedLines:
         log_file = tmp_path / "alternating.jsonl"
         lines = [
             # Line 1: Header
-            json.dumps({"_type": "header", "run_name": "chain_test", "created_at": "2026-09-14T00:00:00Z"}),
+            json.dumps({"type": "header", "run_name": "chain_test", "created_at": "2026-09-14T00:00:00Z"}),
             # Line 2: Arbitrary garbage string
             "<<<SYNTAX_ERROR_CORRUPTED_LINE_2>>>",
             # Line 3: Valid metric row
@@ -314,7 +314,7 @@ class TestTruncatedWritesAndEscapedBoundaries:
         """Verify mid-line recovered record that is a header updates run_name without adding metric row."""
         log_file = tmp_path / "recovered_header.jsonl"
         lines = [
-            'CRASH_JUNK{"_type": "header", "run_name": "inferred_resumed_name", "created_at": "2026-09-14T00:00:00Z"}',
+            '{"CRASH_JUNK": 1{"type": "header", "run_name": "inferred_resumed_name", "created_at": "2026-09-14T00:00:00Z"}',
             json.dumps({"step": 1, "loss": 0.5}),
         ]
         log_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -633,7 +633,7 @@ class TestSchemaEvolutionAcross12DisjointRuns:
 
         # Check type collision column: 'loss' contains numeric floats, special floats, and string 'diverged_loss'
         assert "loss" in df.columns
-        loss_vals = df["loss"].dropna().tolist()
+        loss_vals = df["loss"].tolist()
         assert "diverged_loss" in loss_vals
         has_nan = any(isinstance(x, float) and math.isnan(x) for x in loss_vals)
         has_pos_inf = any(isinstance(x, float) and math.isinf(x) and x > 0 for x in loss_vals)
@@ -766,17 +766,17 @@ class TestDirectoryTraversalAndSymlinks:
 
         _write_run_files(
             run_good_1,
-            run_name="good_1",
+            meta_content={"run_name": "good_1"},
             log_lines=[json.dumps(constants.DEFAULT_HEADER), json.dumps({"step": 1, "val": 1.0})],
         )
         _write_run_files(
             run_bad,
-            run_name="bad_permission",
+            meta_content={"run_name": "bad_permission"},
             log_lines=[json.dumps(constants.DEFAULT_HEADER), json.dumps({"step": 1, "val": 2.0})],
         )
         _write_run_files(
             run_good_2,
-            run_name="good_2",
+            meta_content={"run_name": "good_2"},
             log_lines=[json.dumps(constants.DEFAULT_HEADER), json.dumps({"step": 1, "val": 3.0})],
         )
 

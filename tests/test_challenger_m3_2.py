@@ -260,7 +260,7 @@ class TestRecursiveDiscovery:
 
         assert len(df) == 1
         assert df["run_name"].iloc[0] == "root_run"
-        assert df["hyperparameters.root"].iloc[0] is True
+        assert df["hyperparameters.root"].iloc[0] == True
 
     def test_empty_and_nonexistent_base_dir(self, tmp_path: Path) -> None:
         """Verify empty and missing logs directories return empty DataFrame."""
@@ -622,7 +622,7 @@ class TestDotNotatedAndNestedHyperparameters:
         df = reader.read_run(run_dir)
 
         assert df["hyperparameters.model.backbone"].iloc[0] == "resnet50"
-        assert df["hyperparameters.model.pretrained"].iloc[0] is True
+        assert df["hyperparameters.model.pretrained"].iloc[0] == True
         assert df["hyperparameters.train.optimizer.type"].iloc[0] == "adamw"
         assert df["hyperparameters.train.optimizer.lr"].iloc[0] == 1e-3
 

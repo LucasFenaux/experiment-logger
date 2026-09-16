@@ -252,10 +252,14 @@ def test_scenario_04_unstable_execution_recovery(tmp_path: Path):
 
 def test_scenario_05_git_dirty_reproducibility_pipeline(temp_git_repo: Path):
     """Scenario 5: Full reproducibility pipeline capturing git commits and dirty working tree patches."""
+    (temp_git_repo / ".gitignore").write_text("results/\n")
+    subprocess.run(["git", "add", ".gitignore"], cwd=temp_git_repo, check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "add gitignore"], cwd=temp_git_repo, check=True, capture_output=True)
+
     # 1. Modify existing tracked file to introduce dirty state
     tracked_file = temp_git_repo / "initial.txt"
     tracked_file.write_text("modified code logic for experimental hypothesis\n", encoding="utf-8")
-
+    
     log_dir = temp_git_repo / "results"
     old_cwd = os.getcwd()
     os.chdir(temp_git_repo)

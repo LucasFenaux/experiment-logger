@@ -758,7 +758,7 @@ class TestAdversarialEnvironmentMetadata:
             # Ensure roundtrip serialization
             json_str = json.dumps(env)
             loaded = json.loads(json_str)
-            assert loaded["sys_platform"] == "wasi-custom-\ud83d\ude80"
+            assert loaded["sys_platform"] == "wasi-custom-🚀"
 
 
 # =============================================================================
